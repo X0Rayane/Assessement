@@ -126,7 +126,7 @@ class Badge:
         Returns:
             None
         """
-        #Same as is_happy_color(), i need more information about unhappy to make the correct modification of the color of the badge
+        #Same as is_happy_color(), i need more information about unhappy colors to make the correct modification of the color of the badge
 
 
     def get_badge(self):
