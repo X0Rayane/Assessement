@@ -51,7 +51,7 @@ class Badge:
 
                 hue_ranges = [
                     (0.0, 0.3),   #yellow and green
-                    (0.35, 1.0),  #red, orange and violet
+                    (0.35, 1.0),  #red, orange and purple
                     (0.25, 0.5),  #blue 
                     ]
                 
