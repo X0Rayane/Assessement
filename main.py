@@ -18,6 +18,7 @@ if __name__ == "__main__":
         badge_index=int(input(f"Chose a badge between the {len(badge_list)} existing badge (type a number between 1 and {len(badge_list)}): "))
         valid, message= badge_list[badge_index-1].verify_badge()
         print(message)
+        
         while not valid:
             if message in ["Found Non-Transparent pixel outside of the circle","Badge have invalid size (Should be 512x512)"]:
                 badge_list[badge_index-1].convert_img()
@@ -25,10 +26,9 @@ if __name__ == "__main__":
                 print(message)
 
             elif message == "Badge contains unhappy colors":
-                badge_list[badge_index-1].adjust_color()
-                valid, message= badge_list[badge_index-1].verify_badge()
-                print(message)
+                break
 
-        badge_list[badge_index-1].get_badge()
+        if valid:    
+            badge_list[badge_index-1].get_badge()
         init=input("Type 'quit' or enter to continue : ")
     exit()

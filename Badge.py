@@ -20,33 +20,56 @@ class Badge:
         if (self.img.width != 512 or self.img.height != 512):
             return False, 'Badge have invalid size (Should be 512x512)'
         
+        if not self.is_happy_badge():
+            return False, "Badge contains unhappy colors"
+
         #Check non transparent pixels within a circle
         for x in range(self.img.width):
             for y in range(self.img.height):
-                if (x - 256) ** 2 + (y - 256) ** 2 <= 256 ** 2: #Check pixels Inside of the circle
-                    pixels = self.img.getpixel((x,y))
-                    if pixels[3] != 0: #Non-Transparent pixel
-                        if not self.is_happy_color(pixels):              
-                            return False, "Badge contains unhappy colors"
-
-                else: #Outside of the circle
+                if (x - 256) ** 2 + (y - 256) ** 2 >= 256 ** 2: #Check pixels Outside of the circle
                     if self.img.getpixel((x,y))[3] != 0: #Pixel should be transparent
                         return False, "Found Non-Transparent pixel outside of the circle"
         
         return True, 'Badge is Valid'
 
-    def is_happy_color(self, pixels) -> bool:
+    def is_happy_badge(self) -> bool:
         """
-        Checks if a given pixel color gives a "happy" feeling.
-        Args:
-            pixel: Tuple representing the RGBA values of the pixel color.
+        Checks if the badge contains a sufficient percentage of "happy" colors.
         Returns:
-            bool: True if the color gives a "happy" feeling, False otherwise.
+            bool: True if the percentage of "happy" colors is above 75%, False otherwise.
         """
-        #We assume in the case of this assessement that i don't have enough information to correctly identify happy/unhappy colours.
-        #This can depend on the saturation, the brightness and the color.
-        #I needed more information about 'happy' feeling
-        return True
+        total_pixels = 0
+        happy_pixels = 0
+        for x in range(self.img.width):
+            for y in range(self.img.height):
+                pixel = self.img.getpixel((x, y))
+
+                if pixel[3]==0: #If pixel is transparent we skip him
+                    continue
+
+                total_pixels += 1
+
+                hue_ranges = [
+                    (0.0, 0.3),   #yellow and green
+                    (0.35, 1.0),  #red, orange and violet
+                    (0.25, 0.5),  #blue 
+                    ]
+                
+                #Convert to HSL and extract relevant values
+                h, s, l = colorsys.rgb_to_hls(pixel[0] / 255, pixel[1] / 255, pixel[2] / 255)
+
+                #A tiny filter to see if it fits the happy colors and brightness 
+                is_happy = False
+                for hue_range in hue_ranges:
+                    if l > 0.7 and s > 0.2 and hue_range[0] <= h <= hue_range[1]:
+                        is_happy = True
+                        break
+
+                if is_happy:
+                    happy_pixels += 1
+
+        happy_percent = (happy_pixels / total_pixels) * 100
+        return happy_percent >= 75  #You can modify the percentage of happy pixels
 
     def convert_img(self):
         """
@@ -119,15 +142,6 @@ class Badge:
             else:
                 continue
             break
-    
-    def adjust_color(self):
-        """
-        Adjust the color balance of the image based on its perceived happiness level.
-        Returns:
-            None
-        """
-        #Same as is_happy_color(), i need more information about unhappy colors to make the correct modification of the color of the badge
-
 
     def get_badge(self):
         """
