@@ -50,9 +50,9 @@ class Badge:
                 total_pixels += 1
 
                 hue_ranges = [
-                    (0.0, 0.3),   #yellow and green
-                    (0.35, 1.0),  #red, orange and purple
-                    (0.25, 0.5),  #blue 
+                    (0.0, 0.3),   #yellow and green (is modular)
+                    (0.35, 1.0),  #red, orange and purple (is modular)
+                    (0.25, 0.5),  #blue (is modular)
                     ]
                 
                 #Convert to HSL and extract relevant values
@@ -61,7 +61,7 @@ class Badge:
                 #A tiny filter to see if it fits the happy colors and brightness 
                 is_happy = False
                 for hue_range in hue_ranges:
-                    if l > 0.7 and s > 0.2 and hue_range[0] <= h <= hue_range[1]:
+                    if l > 0.7 and s > 0.2 and hue_range[0] <= h <= hue_range[1]: #brightness, saturation and Hue (is modular)
                         is_happy = True
                         break
 
